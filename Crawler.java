@@ -26,6 +26,9 @@ public class Crawler {
         if (redirect != null) {
             connection = new URL(redirect).openConnection();
         }
+        //connection.addRequestProperty("User-Agent", "Opera");
+        //connection.setReadTimeout(5000);
+        //connection.setConnectTimeout(5000);
         Done.add(pair);
         if (pair.getDepth() == 0) return;
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -34,6 +37,8 @@ public class Crawler {
             while (input.contains("a href=\"" + prefix)) {
                 input = input.substring(input.indexOf("a href=\"" + prefix) + 8);
                 String link = input.substring(0, input.indexOf('\"'));
+                if(link.contains(" "))
+                   link = link.replace(" ", "%20");
                 if (NotDone.contains(new URLDepthPair(link, 0)) ||
                         Done.contains(new URLDepthPair(link, 0))) continue;
                 NotDone.add(new URLDepthPair(link, pair.getDepth() - 1));
